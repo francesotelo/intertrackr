@@ -6,9 +6,28 @@ const STATUSES = ['Wishlist', 'Applied', 'OA/Interview', 'Offer', 'Rejected'];
 export default function AddApplicationModal({ onClose, onAdd }) {
   const [form, setForm] = useState({ company: '', role: '', location: '', link: '', status: 'Wishlist', notes: '', appliedDate: '', deadline: '' });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onAdd(form);
+    
+    let lat = null;
+    let lng = null;
+
+    if (form.location) {
+      try {
+        const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${form.location}`);
+        const geoData = await geoRes.json();
+        if (geoData && geoData.length > 0) {
+          lat = parseFloat(geoData[0].lat);
+          lng = parseFloat(geoData[0].lon);
+        }
+      } catch (error) {
+        console.log("Could not find coordinates for this location");
+      }
+    }
+
+    const applicationData = { ...form, lat, lng };
+
+    onAdd(applicationData);
   };
 
   return (

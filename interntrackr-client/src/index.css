@@ -1,32 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* 1. This fixes the "parang inipit" fonts by restoring default heading sizes */
+@layer base {
+  h1 { @apply text-3xl font-bold; }
+  h2 { @apply text-2xl font-bold; }
+  h3 { @apply text-xl font-bold; }
+}
 
+/* 2. Your Morning Mode Colors */
 :root {
-  --bg: #0a0a0f;
-  --surface: #111118;
-  --surface2: #1a1a24;
-  --border: #2a2a3a;
-  --accent: #7c6af7;
-  --accent2: #f7c06a;
-  --text: #e8e8f0;
-  --muted: #6b6b80;
-  --wishlist: #4a9eff;
-  --applied: #a78bfa;
-  --oa: #f59e0b;
-  --offer: #10b981;
-  --rejected: #ef4444;
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface2: #f1f5f9;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --muted: #64748b;
+  --accent: #2563eb;
 }
 
+/* 3. Your Night Mode Colors */
+html.dark {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface2: #334155;
+  --border: #475569;
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --accent: #3b82f6;
+}
+
+/* 4. This forces the WHOLE page background to change */
 body {
-  background: var(--bg);
-  color: var(--text);
+  margin: 0;
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
   font-family: 'DM Sans', sans-serif;
-  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
-
-h1, h2, h3, h4 { font-family: 'Syne', sans-serif; }
-
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }

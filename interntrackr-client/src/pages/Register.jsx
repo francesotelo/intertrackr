@@ -24,7 +24,7 @@ export default function Register() {
     <div style={styles.page}>
       <div style={styles.card}>
         <div style={styles.logo}>🎓</div>
-        <h1 style={styles.title}>Join InternTrack</h1>
+        <h1 style={styles.title}>Join InternTrackr</h1>
         <p style={styles.sub}>Start tracking your internship hunt today.</p>
         {error && <div style={styles.error}>{error}</div>}
         <form onSubmit={handleSubmit} style={styles.form}>

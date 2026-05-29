@@ -9,6 +9,8 @@ const ApplicationSchema = new mongoose.Schema({
   company: { type: String, required: true },
   role: { type: String, required: true },
   location: { type: String, default: '' },
+  lat: { type: Number },
+  lng: { type: Number },
   status: { type: String, default: 'Wishlist' },
   link: { type: String, default: '' },
   appliedDate: { type: String, default: '' },

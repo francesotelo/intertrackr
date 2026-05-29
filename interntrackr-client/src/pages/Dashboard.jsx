@@ -4,7 +4,8 @@ import Navbar from '../components/Navbar';
 import Pipeline from '../components/Pipeline';
 import Analytics from '../components/Analytics';
 import AddApplicationModal from '../components/AddApplicationModal';
-import Profile from './Profile';  // ADD THIS
+import Profile from './Profile';
+import InternshipMap from '../components/InternshipMap';
 import { Plus, Search } from 'lucide-react';
 
 export default function Dashboard() {
@@ -46,7 +47,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg)' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {activeTab === 'Pipeline' && (
@@ -67,9 +68,21 @@ export default function Dashboard() {
         </div>
       )}
 
-      {activeTab === 'Analytics' && <Analytics apps={apps} />}
+      {/* MAP MOVED HERE: It will now ONLY show when Analytics is active */}
+      {activeTab === 'Analytics' && (
+        <div style={styles.main}>
+          <Analytics apps={apps} />
+          
+          <div style={{ marginTop: '3rem' }}>
+            <h2 style={{ marginBottom: '1rem', color: 'var(--text)' }}>
+              Internship Locations 🗺️
+            </h2>
+            <InternshipMap applications={apps} />
+          </div>
+        </div>
+      )}
 
-      {activeTab === 'Profile' && <Profile />}  {/* ADD THIS */}
+      {activeTab === 'Profile' && <Profile />}
 
       {showModal && <AddApplicationModal onClose={() => setShowModal(false)} onAdd={handleAdd} />}
     </div>
@@ -77,7 +90,7 @@ export default function Dashboard() {
 }
 
 const styles = {
-  main: { padding: '2rem' },
+  main: { padding: '2rem', flex: 1 },
   toolbar: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', gap: '1rem' },
   searchWrap: { position: 'relative', flex: 1, maxWidth: '400px' },
   searchIcon: { position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)' },

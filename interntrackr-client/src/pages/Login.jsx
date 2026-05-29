@@ -24,7 +24,7 @@ export default function Login() {
     <div style={styles.page}>
       <div style={styles.card}>
         <div style={styles.logo}>🎓</div>
-        <h1 style={styles.title}>InternTrack</h1>
+        <h1 style={styles.title}>InternTrackr</h1>
         <p style={styles.sub}>Your internship pipeline, organized.</p>
         {error && <div style={styles.error}>{error}</div>}
         <form onSubmit={handleSubmit} style={styles.form}>
