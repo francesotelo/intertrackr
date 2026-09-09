@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
+const cors = express ? require('cors') : null; // Enables cross-origin requests
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
 const bcrypt = require('bcryptjs');
@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 
 // 1. Initialize Express
 const app = express();
-app.use(cors());
+app.use(cors()); // CRITICAL: Fixes the CORS block between your frontend and backend on Vercel
 app.use(express.json());
 
 // 2. Initialize Firebase Admin SDK (Updated for Vercel Deployment)
