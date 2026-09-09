@@ -11,8 +11,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 2. Initialize Firebase Admin SDK
-const serviceAccount = require('./serviceAccountKey.json');
+// 2. Initialize Firebase Admin SDK (Updated for Vercel Deployment)
+let serviceAccount;
+if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  // If running in Vercel, use the environment variable
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+} else {
+  // If running locally on your laptop, use the file
+  serviceAccount = require('./serviceAccountKey.json');
+}
+
 initializeApp({
   credential: cert(serviceAccount)
 });
@@ -94,8 +102,7 @@ app.delete('/api/applications/:id', async (req, res) => {
       const verified = jwt.verify(token, process.env.JWT_SECRET);
       req.user = verified;
     } catch (tokenErr) {
-      console.error("JWT Verification Failed Details:", tokenErr.message); 
-      return res.status(403).json({ error: "Invalid token.", details: tokenErr.message });
+      return res.status(403).json({ error: "Invalid token." });
     }
 
     // 3. Proof (c): Valid caller deletes the document
