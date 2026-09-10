@@ -1,3 +1,4 @@
+import React from 'react';
 import ApplicationCard from './ApplicationCard';
 
 const COLUMNS = [
@@ -29,7 +30,8 @@ export default function Pipeline({ apps, onUpdate, onDelete, search }) {
               {colApps.length === 0
                 ? <div style={styles.empty}>No applications</div>
                 : colApps.map(app => (
-                    <ApplicationCard key={app._id} app={app} onUpdate={onUpdate} onDelete={onDelete} />
+                    /* Fixed: changed app._id to app.id for Firebase */
+                    <ApplicationCard key={app.id} app={app} onUpdate={onUpdate} onDelete={onDelete} />
                   ))
               }
             </div>

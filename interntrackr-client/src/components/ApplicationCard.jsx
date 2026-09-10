@@ -17,7 +17,8 @@ export default function ApplicationCard({ app, onUpdate, onDelete }) {
         </div>
         <div style={styles.actions}>
           {app.link && <a href={app.link} target="_blank" rel="noopener noreferrer" style={styles.iconBtn}><ExternalLink size={14} /></a>}
-          <button onClick={() => onDelete(app._id)} style={{ ...styles.iconBtn, color: '#ef4444' }}><Trash2 size={14} /></button>
+          {/* Fixed: changed app._id to app.id */}
+          <button onClick={() => onDelete(app.id)} style={{ ...styles.iconBtn, color: '#ef4444' }}><Trash2 size={14} /></button>
         </div>
       </div>
       <div style={styles.bottom}>
@@ -29,7 +30,8 @@ export default function ApplicationCard({ app, onUpdate, onDelete }) {
           {showStatus && (
             <div style={styles.dropdown}>
               {STATUSES.map(s => (
-                <button key={s} onClick={() => { onUpdate(app._id, { status: s }); setShowStatus(false); }}
+                /* Fixed: changed app._id to app.id */
+                <button key={s} onClick={() => { onUpdate(app.id, { status: s }); setShowStatus(false); }}
                   style={{ ...styles.dropItem, color: STATUS_COLORS[s] }}>{s}</button>
               ))}
             </div>

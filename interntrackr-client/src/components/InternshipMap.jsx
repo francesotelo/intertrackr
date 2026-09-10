@@ -26,7 +26,8 @@ export default function InternshipMap({ applications }) {
         {applications && applications.map((app) => {
           if (app.lat && app.lng) {
             return (
-              <Marker key={app._id} position={[app.lat, app.lng]}>
+              /* Fixed: changed app._id to app.id for Firebase */
+              <Marker key={app.id} position={[app.lat, app.lng]}>
                 <Popup>
                   <strong style={{ color: '#000' }}>{app.company}</strong><br />
                   <span style={{ color: '#333' }}>{app.role}</span><br />
