@@ -13,11 +13,15 @@ export default function Profile() {
   const [saved, setSaved] = useState(false);
   const fileRef = useRef();
 
+  // Create a clean variable for your Vercel URL
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   useEffect(() => { fetchProfile(); }, []);
 
   const fetchProfile = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/profile');
+      // Replaced localhost with live Vercel URL
+      const res = await axios.get(`${apiUrl}/api/profile`);
       setProfile(res.data);
       setForm(res.data);
     } catch (err) { console.error(err); }
@@ -26,7 +30,8 @@ export default function Profile() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const res = await axios.put('http://localhost:5000/api/profile', form);
+      // Replaced localhost with live Vercel URL
+      const res = await axios.put(`${apiUrl}/api/profile`, form);
       setProfile(res.data);
       setEditing(false);
       setSaved(true);

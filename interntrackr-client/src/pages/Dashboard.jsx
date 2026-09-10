@@ -14,35 +14,47 @@ export default function Dashboard() {
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState('');
 
+  // Store the environment variable in a constant for cleaner code
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   useEffect(() => { fetchApps(); }, []);
 
   const fetchApps = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/applications');
+      const res = await axios.get(`${apiUrl}/api/applications`);
       setApps(res.data);
     } catch (err) { console.error(err); }
   };
 
   const handleAdd = async (form) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/applications', form);
-      setApps(prev => [res.data, ...prev]);
+      await axios.post(`${apiUrl}/api/applications`, form);
+      await fetchApps(); // Refresh list to pull the new document from Firestore
       setShowModal(false);
     } catch (err) { console.error(err); }
   };
 
   const handleUpdate = async (id, updates) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/applications/${id}`, updates);
-      setApps(prev => prev.map(a => a._id === id ? res.data : a));
+      await axios.put(`${apiUrl}/api/applications/${id}`, updates);
+      await fetchApps(); // Refresh list to pull the updated document from Firestore
     } catch (err) { console.error(err); }
   };
 
   const handleDelete = async (id) => {
     if (!confirm('Delete this application?')) return;
     try {
-      await axios.delete(`http://localhost:5000/api/applications/${id}`);
-      setApps(prev => prev.filter(a => a._id !== id));
+      const token = localStorage.getItem('token');
+      
+      // Inject the JWT token into the headers for Act 5 Proofs
+      await axios.delete(`${apiUrl}/api/applications/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      // Changed _id to id for Firestore compatibility
+      setApps(prev => prev.filter(a => a.id !== id)); 
     } catch (err) { console.error(err); }
   };
 

@@ -1,54 +1,84 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 
-export default function Login() {
-  const [form, setForm] = useState({ email: '', password: '' });
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const handleSubmit = async (e) => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError('');
+
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', form);
+      const res = await axios.post(`${apiUrl}/api/users/login`, {
+        email, 
+        password 
+      });
+
+      console.log("Login successful!");
       login(res.data.token, res.data.user);
-      navigate('/');
+      navigate('/dashboard'); 
     } catch (err) {
-      setError(err.response?.data?.msg || 'Login failed');
+      setError(err.response?.data?.message || 'Invalid email or password');
+      console.error("Server error:", err);
     }
   };
 
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
-        <div style={styles.logo}>🎓</div>
-        <h1 style={styles.title}>InternTrackr</h1>
-        <p style={styles.sub}>Your internship pipeline, organized.</p>
-        {error && <div style={styles.error}>{error}</div>}
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <input style={styles.input} type="email" placeholder="Email" value={form.email}
-            onChange={e => setForm({ ...form, email: e.target.value })} required />
-          <input style={styles.input} type="password" placeholder="Password" value={form.password}
-            onChange={e => setForm({ ...form, password: e.target.value })} required />
-          <button style={styles.btn} type="submit">Sign In</button>
+    <div className="flex items-center justify-center min-h-screen bg-[var(--bg)]">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-3xl font-bold text-center text-blue-600 mb-6">Welcome Back</h2>
+        
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleLogin}>
+          <div className="mb-4">
+            <input 
+              type="email" 
+              placeholder="Email" 
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <input 
+              type="password" 
+              placeholder="Password" 
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button 
+            type="submit" 
+            className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300"
+          >
+            Sign In
+          </button>
         </form>
-        <p style={styles.link}>No account? <Link to="/register" style={{ color: 'var(--accent)' }}>Register</Link></p>
+
+        <div className="mt-4 text-center">
+          <Link to="/register" className="text-blue-500 hover:text-blue-700 font-semibold">
+            Don't have an account? Sign up
+          </Link>
+        </div>
       </div>
     </div>
   );
-}
-
-const styles = {
-  page: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)' },
-  card: { background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '16px', padding: '2.5rem', width: '100%', maxWidth: '400px', textAlign: 'center' },
-  logo: { fontSize: '3rem', marginBottom: '0.5rem' },
-  title: { fontSize: '2rem', fontWeight: 800, color: 'var(--text)', marginBottom: '0.25rem' },
-  sub: { color: 'var(--muted)', marginBottom: '2rem', fontSize: '0.9rem' },
-  error: { background: '#ef444420', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '8px', padding: '0.75rem', marginBottom: '1rem', fontSize: '0.85rem' },
-  form: { display: 'flex', flexDirection: 'column', gap: '1rem' },
-  input: { background: 'var(--surface2)', border: '1px solid var(--border)', borderRadius: '8px', padding: '0.85rem 1rem', color: 'var(--text)', fontSize: '0.95rem', outline: 'none' },
-  btn: { background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: '8px', padding: '0.9rem', fontSize: '1rem', fontWeight: 600, cursor: 'pointer', fontFamily: 'Syne, sans-serif' },
-  link: { marginTop: '1.5rem', color: 'var(--muted)', fontSize: '0.9rem' }
 };
+
+export default Login;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -8,37 +9,24 @@ const Register = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  const apiUrl = import.meta.env.VITE_API_URL;
+
   const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
 
     try {
-      // Updated to use the Vercel API URL environment variable
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          name, 
-          email, 
-          password 
-        }),
+      const res = await axios.post(`${apiUrl}/api/users/register`, {
+        name,
+        email,
+        password
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log("Registration successful!", data);
-        // Redirect to login page on success
-        navigate('/login'); 
-      } else {
-        setError(data.message || 'Registration failed');
-        console.error("Registration failed:", data.message);
-      }
-    } catch (error) {
-      setError('Server error. Please try again later.');
-      console.error("Server error:", error);
+      console.log("Registration successful!", res.data);
+      navigate('/login'); 
+    } catch (err) {
+      setError(err.response?.data?.message || 'Server error. Please try again later.');
+      console.error("Server error:", err);
     }
   };
 
