@@ -190,6 +190,41 @@ app.post('/api/users/login', async (req, res) => {
   }
 });
 
+// --- USER PROFILE ROUTES ---
+
+// READ: Get user profile
+app.get('/api/profile', async (req, res) => {
+  try {
+    const snapshot = await db.collection('users').limit(1).get();
+    if (snapshot.empty) {
+      return res.status(404).json({ error: "Profile not found" });
+    }
+    const doc = snapshot.docs[0];
+    res.status(200).json({ id: doc.id, ...doc.data() });
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    res.status(500).json({ error: "Failed to fetch profile" });
+  }
+});
+
+// UPDATE: Modify user profile
+app.put('/api/profile', async (req, res) => {
+  try {
+    const snapshot = await db.collection('users').limit(1).get();
+    if (snapshot.empty) {
+      return res.status(404).json({ error: "Profile not found" });
+    }
+    const docId = snapshot.docs[0].id;
+    await db.collection('users').doc(docId).update(req.body);
+    
+    const updatedDoc = await db.collection('users').doc(docId).get();
+    res.status(200).json({ id: updatedDoc.id, ...updatedDoc.data() });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ error: "Failed to update profile" });
+  }
+});
+
 // 3. Start the Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
