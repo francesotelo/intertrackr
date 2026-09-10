@@ -196,3 +196,5 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`Firestore database is connected and ready!`);
 });
+
+module.exports = app;
