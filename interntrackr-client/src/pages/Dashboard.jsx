@@ -21,14 +21,22 @@ export default function Dashboard() {
 
   const fetchApps = async () => {
     try {
-      const res = await axios.get(`${apiUrl}/api/applications`);
+      const token = localStorage.getItem('token');
+      // Added Auth header here
+      const res = await axios.get(`${apiUrl}/api/applications`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setApps(res.data);
     } catch (err) { console.error(err); }
   };
 
   const handleAdd = async (form) => {
     try {
-      await axios.post(`${apiUrl}/api/applications`, form);
+      const token = localStorage.getItem('token');
+      // Added Auth header here
+      await axios.post(`${apiUrl}/api/applications`, form, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       await fetchApps(); // Refresh list to pull the new document from Firestore
       setShowModal(false);
     } catch (err) { console.error(err); }
@@ -36,7 +44,11 @@ export default function Dashboard() {
 
   const handleUpdate = async (id, updates) => {
     try {
-      await axios.put(`${apiUrl}/api/applications/${id}`, updates);
+      const token = localStorage.getItem('token');
+      // Added Auth header here
+      await axios.put(`${apiUrl}/api/applications/${id}`, updates, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       await fetchApps(); // Refresh list to pull the updated document from Firestore
     } catch (err) { console.error(err); }
   };
@@ -48,9 +60,7 @@ export default function Dashboard() {
       
       // Inject the JWT token into the headers for Act 5 Proofs
       await axios.delete(`${apiUrl}/api/applications/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+        headers: { Authorization: `Bearer ${token}` }
       });
       
       // Changed _id to id for Firestore compatibility
