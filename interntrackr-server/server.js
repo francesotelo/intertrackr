@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const cors = express ? require('cors') : null; // Enables cross-origin requests
+const cors = require('cors'); // Enabled cross-origin requests
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore } = require('firebase-admin/firestore');
 const bcrypt = require('bcryptjs');
@@ -31,15 +31,20 @@ const db = getFirestore();
 // CREATE: Save a new internship application
 app.post('/api/applications', async (req, res) => {
   try {
-    const { company, position, status, dateApplied } = req.body;
+    // 1. Grab all data sent from the frontend
+    const applicationData = { ...req.body };
     
-    const docRef = await db.collection('applications').add({
-      company,
-      position,
-      status,
-      dateApplied,
-      createdAt: new Date().toISOString()
+    // 2. Add creation timestamp
+    applicationData.createdAt = new Date().toISOString();
+
+    // 3. THE FIX: Remove undefined fields to prevent Firestore 500 crash
+    Object.keys(applicationData).forEach(key => {
+      if (applicationData[key] === undefined) {
+        delete applicationData[key];
+      }
     });
+
+    const docRef = await db.collection('applications').add(applicationData);
 
     res.status(201).json({ id: docRef.id, message: "Application tracked successfully!" });
   } catch (error) {
@@ -73,7 +78,14 @@ app.get('/api/applications', async (req, res) => {
 app.put('/api/applications/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const updateData = req.body;
+    const updateData = { ...req.body };
+    
+    // THE FIX: Remove undefined fields to prevent Firestore crash on update
+    Object.keys(updateData).forEach(key => {
+      if (updateData[key] === undefined) {
+        delete updateData[key];
+      }
+    });
     
     const applicationRef = db.collection('applications').doc(id);
     await applicationRef.update(updateData);
@@ -210,12 +222,21 @@ app.get('/api/profile', async (req, res) => {
 // UPDATE: Modify user profile
 app.put('/api/profile', async (req, res) => {
   try {
+    const updateData = { ...req.body };
+    
+    // Remove undefined fields
+    Object.keys(updateData).forEach(key => {
+      if (updateData[key] === undefined) {
+        delete updateData[key];
+      }
+    });
+
     const snapshot = await db.collection('users').limit(1).get();
     if (snapshot.empty) {
       return res.status(404).json({ error: "Profile not found" });
     }
     const docId = snapshot.docs[0].id;
-    await db.collection('users').doc(docId).update(req.body);
+    await db.collection('users').doc(docId).update(updateData);
     
     const updatedDoc = await db.collection('users').doc(docId).get();
     res.status(200).json({ id: updatedDoc.id, ...updatedDoc.data() });
