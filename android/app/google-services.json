@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "120556791562",
+    "project_id": "interntrackr-app",
+    "storage_bucket": "interntrackr-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:120556791562:android:dd3c87d7b02fc82fce7cf3",
+        "android_client_info": {
+          "package_name": "com.example.interntrackr_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDu-8vhS0VbasWzPPsJA2y6AqwfZEMeNRM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
